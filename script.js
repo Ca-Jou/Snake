@@ -1,8 +1,15 @@
-let snake = document.getElementById('snake');
-let zone = document.getElementById('zone');
-let deplacement = 100;
+
+const zone = document.getElementById('zone');
+const snake = document.getElementById('snake');
+let move = setInterval(moveSnake, 500);
+let waistSnake = 10;
+let left = 50;
+
+function moveSnake() {
+  if(left < 100) {
+    left += 1;
+  }
+  snake.style.left = (left - waistSnake) + "%";
 
 
-setTimeout(function() {
-    snake.style.left=deplacement
-}, 500);
+}
