@@ -1,3 +1,21 @@
 body {
-  background-color: red;
+  margin: 0;
+  padding: 0;
+}
+.zone {
+  position: relative;
+  background-color: grey;
+  width: 600px;
+  height: 600px;
+  margin: auto;
+  margin-top: 50px;
+}
+.snake {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: green;
+  height: 2px;
+  width: 30px;
 }
