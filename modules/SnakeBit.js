@@ -1,4 +1,4 @@
-class SnakeBit {
+export class SnakeBit {
 
     constructor(x, y) {
         this.setX(x);

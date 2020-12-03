@@ -1,22 +1,11 @@
+import * as Snake from "./modules/Snake.js";
+
 const canvas = document.getElementById('zone');
 const ctx = canvas.getContext('2d');
 
-const width = height = 20;
+let width = 0;
+let height = 0;
 
-let x = Math.trunc(Math.random() * canvas.width/width) * width;
-let y = Math.trunc(Math.random() * canvas.height/height) * height;
-
-let depX = depY = 0;
-
-let path = [];
-
-let lengthPath = lengthInitPath = 5;
-let jumpPath = 1;
-let lengthMaxPath = 100;
-
-let hist, range;
-let countFor = 0;
-let jumpFor = 10;
 let timeout = 0;
 
 let life = 5;
@@ -29,44 +18,22 @@ let score = 0;
 
 window.onload=function() {
 
-  const intervalID = setInterval(game,100);
+  let snake = new Snake.Snake(canvas);
+  const intervalID = setInterval(game,500, snake);
+  document.addEventListener("keydown", (e) => { keyboard(e, snake); });
 
-  document.addEventListener("keydown",keyboard);
 }
 
-function game() {
+function game(snake) {
 
   ctx.clearRect(0,0, canvas.width, canvas.height);
 
-  x += depX * width;
-  y += depY * height;
+  snake.move();
+  snake.draw(ctx);
 
-  if(lengthPath <= lengthMaxPath) {
-    if((countFor++) % 10 == 1) {
-      jumpFor--;
-      if(jumpFor < 0) {
-        lengthPath += jumpPath;
-      }
-    }
-  }
-
-  path.push({x:x, y:y});
-
-  while (path.length> lengthPath) {
-    path.shift();
-  }
-
-  ctx.fillStyle="#f1c40f";
-
-  for (var i = 0; i < path.length; i++) {
-    ctx.fillRect(path[i].x, path[i].y, width-3, height-3)
-  }
-
-  if(x == appleX && y == appleY) {
+  if(snake.getTail().getX() == appleX && snake.getTail().getY() == appleY) {
     score += 10 + 2 * ((lengthPath - lengthInitPath)/jumpPath);
-    if (lengthPath>lengthInitPath) {
-      lengthPath -= jumpPath;
-    }
+    snake.grow(appleX, appleY);
     appleX = Math.trunc(Math.random() * canvas.width / width) * width;
     appleY = Math.trunc(Math.random() * canvas.height / height) * height;
   } else if(timeout++ > 100) {
@@ -92,22 +59,19 @@ function game() {
   //affichage vies
   ctx.fillText('Vies restante: ' + life, canvas.width - 130, 20);
 
-  if(x < 0 || x > canvas.width || y < 0 || y > canvas.width ) {
+  if(snake.getHead().getX() < 0 || snake.getHead().getX() > canvas.width || snake.getHead().getY() < 0 || snake.getHead().getY() > canvas.width ) {
     timeout = 0;
-    while (path.length > 1) {
-      path.shift();
-    }
-    x = Math.trunc(Math.random() * canvas.width/width) * width;
-    y = Math.trunc(Math.random() * canvas.height/height) * height;
+    life--;
 
-    lengthPath = lengthInitPath;
+    snake = new Snake.Snake(canvas);
 
     appleX = Math.trunc(Math.random() * canvas.width / width) * width;
     appleY = Math.trunc(Math.random() * canvas.height / height) * height;
 
-    life--;
 
-    if(life === 0) {
+
+    // le bloc de code suivant ne marche pas
+    if(life == 0) {
       ctx.font = '40px Arial';
       ctx.fillStyle = '#fff'
       ctx.fillText('GAME OVER', canvas.width / 2 - 130, canvas.heigth /2);
@@ -120,40 +84,36 @@ function game() {
   }
 }
 
-function keyboard(e) {
+function keyboard(e, snake) {
+  let currentDir = snake.direction;
   switch (e.key) {
     case "ArrowLeft":
-      if(hist == "ArrowRight"){break;}
-      depX = -1;
-      depY = 0;
-      hist = e.key;
+      if(currentDir == "R"){break;}
+      snake.direction = "L";
+      currentDir = "L";
       break;
 
     case "ArrowUp":
-      if(hist == "ArrowDown"){break;}
-      depX = 0;
-      depY = -1;
-      hist = e.key;
+      if(currentDir == "D"){break;}
+      snake.direction = "U";
+      currentDir = "U";
       break;
 
     case "ArrowRight":
-      if(hist == "ArrowLeft"){break;}
-      depX = 1;
-      depY = 0;
-      hist = e.key;
+      if(currentDir == "L"){break;}
+      snake.direction = "R";
+      currentDir = "R";
       break;
 
     case "ArrowDown":
-      if(hist == "ArrowUp"){break;}
-      depX = 0;
-      depY  = 1;
-      hist = e.key;
+      if(currentDir == "U"){break;}
+      snake.direction = "D";
+      currentDir = "D";
       break;
 
-    case "Escape":
-      depX = 0;
-      depY = 0;
-      break;
-
+    // case "Escape":
+    //   depX = 0;
+    //   depY = 0;
+    //   break;
   }
 }
