@@ -16,12 +16,12 @@ export class Snake {
     }
 
     // methodes metier
-    grow(appleX, appleY) {
-        // cette methode est appelee quand le serpent mange une pomme
+    grow(xBug, yBug) {
+        // cette methode est appelee quand le serpent mange un insecte
 
         if (this._body.length <= Snake.MAX_LENGTH) {
             for (var i = 0; i < this._growthRate; i++) {
-                this._body.push(new SnakeBit.SnakeBit(appleX, appleY));
+                this._body.push(new SnakeBit.SnakeBit(xBug, yBug));
             }
         }
 
@@ -55,9 +55,9 @@ export class Snake {
                 break;
         }
 
-        let currentTail = this.getTail();
+        let currentHead = this.getHead();
 
-        this._body.push(new SnakeBit.SnakeBit(currentTail.getX() + depX * Snake.WIDTH, currentTail.getY() + depY * Snake.HEIGHT));
+        this._body.push(new SnakeBit.SnakeBit(currentHead.x + depX * Snake.WIDTH, currentHead.y + depY * Snake.HEIGHT));
 
         this._body.shift();
 
@@ -71,12 +71,8 @@ export class Snake {
         }
     }
 
-    getTail() {
-        return this._body[this._body.length - 1];
-    }
-
     getHead() {
-        return this._body[0];
+        return this._body[this._body.length - 1];
     }
 
     // setters

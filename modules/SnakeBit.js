@@ -1,26 +1,25 @@
 export class SnakeBit {
 
     constructor(x, y) {
-        this.setX(x);
-        this.setY(y);
+        this._x = x;
+        this._y = y;
     }
 
     // getters
-    getX() {
-        return this.x;
+    get x() {
+        return this._x;
     }
 
-    getY() {
-        return this.y;
+    get y() {
+        return this._y;
     }
 
     // setters
-    setX(newX) {
-        this.x = newX;
+    set x(value) {
+        this._x = value;
     }
 
-    setY(newY) {
-        this.y = newY;
+    set y(value) {
+        this._y = value;
     }
-
 }

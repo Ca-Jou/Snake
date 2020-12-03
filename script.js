@@ -1,55 +1,40 @@
 import * as Snake from "./modules/Snake.js";
+import * as Bug from "./modules/Bug.js";
 
 const canvas = document.getElementById('zone');
 const ctx = canvas.getContext('2d');
 
-let width = 0;
-let height = 0;
-
 let timeout = 0;
-
 let life = 5;
-
-let appleX = Math.trunc(Math.random() * canvas.width/width) * width;
-let appleY = Math.trunc(Math.random() * canvas.height/height) * height;
-let appleRadius = 10;
-
 let score = 0;
 
 window.onload=function() {
 
   let snake = new Snake.Snake(canvas);
-  const intervalID = setInterval(game,500, snake);
+  let bug = new Bug.Bug(canvas);
+  const intervalID = setInterval(game,300, snake, bug);
   document.addEventListener("keydown", (e) => { keyboard(e, snake); });
 
 }
 
-function game(snake) {
+function game(snake, bug) {
 
   ctx.clearRect(0,0, canvas.width, canvas.height);
 
   snake.move();
-  snake.draw(ctx);
 
-  if(snake.getTail().getX() == appleX && snake.getTail().getY() == appleY) {
-    score += 10 + 2 * ((lengthPath - lengthInitPath)/jumpPath);
-    snake.grow(appleX, appleY);
-    appleX = Math.trunc(Math.random() * canvas.width / width) * width;
-    appleY = Math.trunc(Math.random() * canvas.height / height) * height;
-  } else if(timeout++ > 100) {
+  if (snake.getHead().x == bug.xBug && snake.getHead().y == bug.yBug) {
+    score += 10 + 2 * ((snake.length)/snake.growthRate);
+    snake.grow(bug.xBug, bug.yBug);
     timeout = 0;
-
-    appleX = Math.trunc(Math.random() * canvas.width / width) * width;
-    appleY = Math.trunc(Math.random() * canvas.height / height) * height;
-
+    bug.popUpRandom(canvas);
+  } else if (timeout++ > 100) {
+    timeout = 0;
+    bug.popUpRandom(canvas);
   }
 
-  //affichage pomme
-  ctx.beginPath();
-  ctx.arc(appleX + appleRadius, appleY + appleRadius, appleRadius, 0, Math.PI * 2);
-  ctx.fillStyle="#e74c3c";
-  ctx.fill();
-  ctx.closePath();
+  bug.draw(ctx);
+  snake.draw(ctx);
 
  //affichage score
   ctx.font = '16px Arial';
@@ -57,18 +42,13 @@ function game(snake) {
   ctx.fillText('Score : ' + score, 5, 20);
 
   //affichage vies
-  ctx.fillText('Vies restante: ' + life, canvas.width - 130, 20);
+  ctx.fillText('Vies restantes: ' + life, canvas.width - 130, 20);
 
-  if(snake.getHead().getX() < 0 || snake.getHead().getX() > canvas.width || snake.getHead().getY() < 0 || snake.getHead().getY() > canvas.width ) {
+  if(snake.getHead().x < 0 || snake.getHead().x > canvas.width || snake.getHead().y < 0 || snake.getHead().y > canvas.width ) {
     timeout = 0;
     life--;
 
     snake = new Snake.Snake(canvas);
-
-    appleX = Math.trunc(Math.random() * canvas.width / width) * width;
-    appleY = Math.trunc(Math.random() * canvas.height / height) * height;
-
-
 
     // le bloc de code suivant ne marche pas
     if(life == 0) {

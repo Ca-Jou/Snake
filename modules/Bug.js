@@ -1,23 +1,39 @@
 export class Bug {
 
-    constructor(xBug, yBug) {
-        this.xBugRandom = xBug;
-        this.yBugRandom = yBug;
-        this.widthBug = 20;
-        this.heightBug = 20;
-    };
+    static WIDTH = 20;
+    static HEIGHT = 20;
 
-    drawBug() {
+    constructor(canvas) {
+        this._xBug = Math.trunc(Math.random() * canvas.width/Bug.WIDTH) * Bug.WIDTH;
+        this._yBug = Math.trunc(Math.random() * canvas.height/Bug.HEIGHT) * Bug.HEIGHT;
+    }
+    //
+    // constructor(canvas, x, y) {
+    //     this.xBug = x;
+    //     this.yBug = y;
+    // }
+
+    draw(ctx) {
         ctx.fillStyle= "brown";
         ctx.beginPath();
-        ctx.fillRect(this.xBug, this.yBug, this.widthBug, this.heightBug);
+        ctx.fillRect(this._xBug, this._yBug, Bug.WIDTH, Bug.HEIGHT);
         ctx.fillStyle="#e74c3c";
         ctx.fill();
         ctx.closePath();
     }
 
-    popUpRandom() {
-        this.xBug = Math.trunc(Math.random() * canvas.width/this.widthBug) * this.widthBug;
-        this.yBug = Math.trunc(Math.random() * canvas.height/this.heightBug) * this.heightBug;
+    // getters
+
+    get xBug() {
+        return this._xBug;
+    }
+
+    get yBug() {
+        return this._yBug;
+    }
+
+    popUpRandom(canvas) {
+        this._xBug = Math.trunc(Math.random() * canvas.width/Bug.WIDTH) * Bug.WIDTH;
+        this._yBug = Math.trunc(Math.random() * canvas.height/Bug.HEIGHT) * Bug.HEIGHT;
     }
 }
