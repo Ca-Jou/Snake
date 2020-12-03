@@ -77,7 +77,7 @@ function game() {
 
   }
 
-  //affichage serpent
+  //affichage pomme
   ctx.beginPath();
   ctx.arc(appleX + appleRadius, appleY + appleRadius, appleRadius, 0, Math.PI * 2);
   ctx.fillStyle="#e74c3c";
@@ -121,36 +121,36 @@ function game() {
 }
 
 function keyboard(e) {
-  switch (e.keyCode) {
-    case 37:
-      if(hist == 39){break;}
+  switch (e.key) {
+    case "ArrowLeft":
+      if(hist == "ArrowRight"){break;}
       depX = -1;
       depY = 0;
-      hist = e.keyCode;
+      hist = e.key;
       break;
 
-    case 38:
-      if(hist == 40){break;}
+    case "ArrowUp":
+      if(hist == "ArrowDown"){break;}
       depX = 0;
       depY = -1;
-      hist = e.keyCode;
+      hist = e.key;
       break;
 
-    case 39:
-      if(hist == 37){break;}
+    case "ArrowRight":
+      if(hist == "ArrowLeft"){break;}
       depX = 1;
       depY = 0;
-      hist = e.keyCode;
+      hist = e.key;
       break;
 
-    case 40:
-      if(hist == 38){break;}
+    case "ArrowDown":
+      if(hist == "ArrowUp"){break;}
       depX = 0;
       depY  = 1;
-      hist = e.keyCode;
+      hist = e.key;
       break;
 
-    case 32:
+    case "Escape":
       depX = 0;
       depY = 0;
       break;
