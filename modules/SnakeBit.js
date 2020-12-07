@@ -1,4 +1,4 @@
-export class SnakeBit {
+export default class SnakeBit {
 
     constructor(x, y) {
         this._x = x;

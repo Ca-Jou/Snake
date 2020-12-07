@@ -1,70 +1,64 @@
-import * as Snake from "./modules/Snake.js";
-import * as Bug from "./modules/Bug.js";
+import Graphics from "./modules/Graphics.js";
+import Game from "./modules/Game.js";
+import Bug from "./modules/Bug.js";
+import Snake from "./modules/Snake.js";
 
-const canvas = document.getElementById('zone');
-const ctx = canvas.getContext('2d');
-
-let timeout = 0;
-let life = 5;
+let life = Game.INITIAL_LIFE;
 let score = 0;
+let timeout = 0;
 
 window.onload=function() {
 
-  let snake = new Snake.Snake(canvas);
-  let bug = new Bug.Bug(canvas);
-  const intervalID = setInterval(game,300, snake, bug);
-  document.addEventListener("keydown", (e) => { keyboard(e, snake); });
+  let graphics = new Graphics();
+  let snake = new Snake(graphics);
+  let bug = new Bug(graphics);
+
+  const intervalID = setInterval(game,300, graphics, snake, bug);
+  document.addEventListener("keydown", (e) => { keyboardHandler(e, snake); });
 
 }
 
-function game(snake, bug) {
+function game(graphics, snake, bug) {
 
-  ctx.clearRect(0,0, canvas.width, canvas.height);
+  graphics.eraseAll();
 
   snake.move();
 
-  if (snake.getHead().x == bug.xBug && snake.getHead().y == bug.yBug) {
-    score += 10 + 2 * ((snake.length)/snake.growthRate);
-    snake.grow(bug.xBug, bug.yBug);
-    timeout = 0;
-    bug.popUpRandom(canvas);
-  } else if (timeout++ > 100) {
-    timeout = 0;
-    bug.popUpRandom(canvas);
+  while (snake.body.length < 5) {
+    snake.grow(snake.getHead().x, snake.getHead().y);
   }
 
-  bug.draw(ctx);
-  snake.draw(ctx);
+  if (snake.getHead().x == bug.xBug && snake.getHead().y == bug.yBug) {
+    score += 10 + 2 * (Math.trunc(snake.body.length) / snake.growthRate);
+    snake.grow(bug.xBug, bug.yBug);
+    snake.growthRate ++;
+    timeout = 0;
+    bug.popUpRandom(graphics);
+  } else if (timeout++ > 100) {
+    timeout = 0;
+    bug.popUpRandom(graphics);
+  }
 
- //affichage score
-  ctx.font = '16px Arial';
-  ctx.fillStyle = '#fff';
-  ctx.fillText('Score : ' + score, 5, 20);
+  graphics.drawBug(bug);
+  graphics.drawSnake(snake);
+  graphics.showScore(score);
+  graphics.showLife(life);
 
-  //affichage vies
-  ctx.fillText('Vies restantes: ' + life, canvas.width - 130, 20);
-
-  if(snake.getHead().x < 0 || snake.getHead().x > canvas.width || snake.getHead().y < 0 || snake.getHead().y > canvas.width ) {
+  if(snake.getHead().x < 0 || snake.getHead().x > graphics.canvas.width || snake.getHead().y < 0 || snake.getHead().y > graphics.canvas.width ) {
     timeout = 0;
     life--;
 
-    snake = new Snake.Snake(canvas);
+    snake = new Snake(graphics);
 
     // le bloc de code suivant ne marche pas
     if(life == 0) {
-      ctx.font = '40px Arial';
-      ctx.fillStyle = '#fff'
-      ctx.fillText('GAME OVER', canvas.width / 2 - 130, canvas.heigth /2);
-      document.getElementById('game-over').play();
+      graphics.gameOver();
       clearTimeout(intervalID);
-    } else {
-      document.getElementById('life').play();
     }
-
   }
 }
 
-function keyboard(e, snake) {
+function keyboardHandler(e, snake) {
   let currentDir = snake.direction;
   switch (e.key) {
     case "ArrowLeft":

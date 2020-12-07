@@ -1,35 +1,26 @@
-import * as SnakeBit from "./SnakeBit.js";
+import SnakeBit from "./SnakeBit.js";
 
-export class Snake {
+export default class Snake {
 
-    static COLOR = "#f1c40f";
     static MAX_LENGTH = 100;
     static WIDTH = 20;
     static HEIGHT = 20;
     static INITIAL_DIR = "R";
 
-    constructor(canvas) {
+    constructor(graphics) {
         this._growthRate = 1;
         this._speed = 1;
-        this._body = [new SnakeBit.SnakeBit(Math.trunc(Math.random() * canvas.width/Snake.WIDTH) * Snake.WIDTH, Math.trunc(Math.random() * canvas.height/Snake.HEIGHT) * Snake.HEIGHT)];
+        this._body = [new SnakeBit(Math.trunc(Math.random() * graphics.canvas.width/Snake.WIDTH) * Snake.WIDTH, Math.trunc(Math.random() * graphics.canvas.height/Snake.HEIGHT) * Snake.HEIGHT)];
         this._direction = Snake.INITIAL_DIR;
     }
 
     // methodes metier
     grow(xBug, yBug) {
-        // cette methode est appelee quand le serpent mange un insecte
-
         if (this._body.length <= Snake.MAX_LENGTH) {
             for (var i = 0; i < this._growthRate; i++) {
-                this._body.push(new SnakeBit.SnakeBit(xBug, yBug));
+                this._body.push(new SnakeBit(xBug, yBug));
             }
         }
-
-        // on augmente la vitesse
-        // this._speed ++;
-
-        // on augmente le taux de croissance
-        this._growthRate ++;
     }
 
     move() {
@@ -57,18 +48,10 @@ export class Snake {
 
         let currentHead = this.getHead();
 
-        this._body.push(new SnakeBit.SnakeBit(currentHead.x + depX * Snake.WIDTH, currentHead.y + depY * Snake.HEIGHT));
+        this._body.push(new SnakeBit(currentHead.x + depX * Snake.WIDTH, currentHead.y + depY * Snake.HEIGHT));
 
         this._body.shift();
 
-    }
-
-    draw(ctx) {
-        ctx.fillStyle=Snake.COLOR;
-
-        for (var i = 0; i < this._body.length; i++) {
-            ctx.fillRect(this._body[i].x, this._body[i].y, Snake.WIDTH-3, Snake.HEIGHT-3)
-        }
     }
 
     getHead() {
@@ -76,9 +59,6 @@ export class Snake {
     }
 
     // setters
-    set length(value) {
-        this._length = value;
-    }
 
     set growthRate(value) {
         this._growthRate = value;
@@ -89,9 +69,6 @@ export class Snake {
     }
 
     // getters
-    get length() {
-        return this._length;
-    }
 
     get growthRate() {
         return this._growthRate;
@@ -99,5 +76,9 @@ export class Snake {
 
     get direction() {
         return this._direction;
+    }
+
+    get body() {
+        return this._body;
     }
 }
