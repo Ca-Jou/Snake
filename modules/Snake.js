@@ -15,10 +15,10 @@ export default class Snake {
     }
 
     // methodes metier
-    grow(xBug, yBug) {
+    grow(x, y) {
         if (this._body.length <= Snake.MAX_LENGTH) {
             for (var i = 0; i < this._growthRate; i++) {
-                this._body.push(new SnakeBit(xBug, yBug));
+                this._body.push(new SnakeBit(x, y));
             }
         }
     }
@@ -56,6 +56,31 @@ export default class Snake {
 
     getHead() {
         return this._body[this._body.length - 1];
+    }
+
+    dead(graphics) {
+        // permet de definir toutes les circonstances ou le snake doit mourir
+        let dead = false;
+
+        // s'il sort du cadre (provisoire)
+        if (this.getHead().x < 0 || this.getHead().x > graphics.canvas.width || this.getHead().y < 0 || this.getHead().y > graphics.canvas.width) {
+            console.log('dead sortie de cadre');
+            dead = true;
+        }
+
+        // // s'il se mord la queue
+        // if (this._body.length >= 5 && !this.growthInProgress) {
+        //     console.log('tete', this.getHead());
+        //     console.log('corps', this._body)
+        //     for (var i = 0; i < this._body.length - 1; i++) {
+        //         if (this.getHead().x == this.body[i].x && this.getHead().y == this.body[i].y) {
+        //             console.log('dead mord la queue');
+        //             dead = true;
+        //         }
+        //     }
+        // }
+
+        return dead;
     }
 
     // setters

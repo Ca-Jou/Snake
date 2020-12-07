@@ -27,10 +27,12 @@ export default class Graphics {
 
     drawSnake(snake) {
         this.ctx.fillStyle = "#f1c40f";
-        console.log(snake.body.length);
-        for (let i = 0; i < snake.body.length; i++) {
+        for (let i = 0; i < snake.body.length - 1; i++) {
             this.ctx.fillRect(snake._body[i].x, snake._body[i].y, Snake.WIDTH-3, Snake.HEIGHT-3)
         }
+
+        this.ctx.fillStyle = "#e64369";
+        this.ctx.fillRect(snake.getHead().x, snake.getHead().y, Snake.WIDTH-3, Snake.HEIGHT-3)
     }
 
     showScore(score) {
@@ -48,6 +50,13 @@ export default class Graphics {
         this.ctx.font = '40px Arial';
         this.ctx.fillStyle = '#fff'
         this.ctx.fillText('GAME OVER', this._canvas.width / 2 - 130, this._canvas.height /2);
+    }
+
+    dead() {
+        this.eraseAll()
+        this.ctx.font = '40px Arial';
+        this.ctx.fillStyle = '#fff'
+        this.ctx.fillText('You lost a life !', this._canvas.width / 2 - 130, this._canvas.height /2);
     }
 
 }

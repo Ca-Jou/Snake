@@ -12,49 +12,60 @@ window.onload=function() {
   let graphics = new Graphics();
   let snake = new Snake(graphics);
   let bug = new Bug(graphics);
-
-  const intervalID = setInterval(game,300, graphics, snake, bug);
-  document.addEventListener("keydown", (e) => { keyboardHandler(e, snake); });
+  game(graphics, snake, bug);
 
 }
 
-function game(graphics, snake, bug) {
+async function game(graphics, snake, bug) {
 
-  graphics.eraseAll();
+  document.addEventListener("keydown", (e) => { keyboardHandler(e, snake); });
+  let inGame = true;
 
-  snake.move();
+  while(inGame) {
 
-  while (snake.body.length < 5) {
-    snake.grow(snake.getHead().x, snake.getHead().y);
-  }
+    graphics.eraseAll();
 
-  if (snake.getHead().x == bug.xBug && snake.getHead().y == bug.yBug) {
-    score += 10 + 2 * (Math.trunc(snake.body.length) / snake.growthRate);
-    snake.grow(bug.xBug, bug.yBug);
-    snake.growthRate ++;
-    timeout = 0;
-    bug.popUpRandom(graphics);
-  } else if (timeout++ > 100) {
-    timeout = 0;
-    bug.popUpRandom(graphics);
-  }
+    snake.move();
 
-  graphics.drawBug(bug);
-  graphics.drawSnake(snake);
-  graphics.showScore(score);
-  graphics.showLife(life);
-
-  if(snake.getHead().x < 0 || snake.getHead().x > graphics.canvas.width || snake.getHead().y < 0 || snake.getHead().y > graphics.canvas.width ) {
-    timeout = 0;
-    life--;
-
-    snake = new Snake(graphics);
-
-    // le bloc de code suivant ne marche pas
-    if(life == 0) {
-      graphics.gameOver();
-      clearTimeout(intervalID);
+    while (snake.body.length < 5) {
+      snake.grow(snake.getHead().x, snake.getHead().y);
     }
+
+    if (snake.getHead().x == bug.xBug && snake.getHead().y == bug.yBug) {
+      score += Math.trunc(10 + 2 * snake.body.length / snake.growthRate);
+      snake.grow(bug.xBug, bug.yBug);
+      snake.growthRate++;
+      timeout = 0;
+      bug.popUpRandom(graphics);
+    } else if (timeout++ > 100) {
+      timeout = 0;
+      bug.popUpRandom(graphics);
+    }
+
+    graphics.drawBug(bug);
+    graphics.drawSnake(snake);
+    graphics.showScore(score);
+    graphics.showLife(life);
+
+    console.log('script', snake.dead(graphics));
+    if (snake.dead(graphics)) {
+      timeout = 0;
+      life--;
+      if (life >= 0) {
+        graphics.dead();
+        inGame = false;
+        await sleep(1000);
+        game(graphics, new Snake(graphics), new Bug(graphics));
+      }
+    }
+
+    if (life == -1) {
+      graphics.gameOver();
+      inGame = false;
+    }
+
+    await sleep(300);
+
   }
 }
 
@@ -90,4 +101,8 @@ function keyboardHandler(e, snake) {
     //   depY = 0;
     //   break;
   }
+}
+
+function sleep(milliseconds) {
+  return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
