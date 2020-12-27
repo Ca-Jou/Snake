@@ -47,11 +47,8 @@ export default class Snake {
         }
 
         let currentHead = this.getHead();
-
         this._body.push(new SnakeBit(currentHead.x + depX * Snake.WIDTH, currentHead.y + depY * Snake.HEIGHT));
-
         this._body.shift();
-
     }
 
     getHead() {
@@ -62,23 +59,21 @@ export default class Snake {
         // permet de definir toutes les circonstances ou le snake doit mourir
         let dead = false;
 
-        // s'il sort du cadre (provisoire)
+        // s'il sort du cadre
         if (this.getHead().x < 0 || this.getHead().x > graphics.canvas.width || this.getHead().y < 0 || this.getHead().y > graphics.canvas.width) {
             console.log('dead sortie de cadre');
             dead = true;
         }
 
-        // // s'il se mord la queue
-        // if (this._body.length >= 5 && !this.growthInProgress) {
-        //     console.log('tete', this.getHead());
-        //     console.log('corps', this._body)
-        //     for (var i = 0; i < this._body.length - 1; i++) {
-        //         if (this.getHead().x == this.body[i].x && this.getHead().y == this.body[i].y) {
-        //             console.log('dead mord la queue');
-        //             dead = true;
-        //         }
-        //     }
-        // }
+        // s'il se mord la queue
+        if (this._body.length > 5) {
+            for (var i = 0; i < this._body.length - 3; i++) {
+                if (this.getHead().x == this.body[i].x && this.getHead().y == this.body[i].y) {
+                    console.log('dead mord la queue');
+                    dead = true;
+                }
+            }
+        }
 
         return dead;
     }

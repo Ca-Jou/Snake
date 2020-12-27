@@ -17,18 +17,17 @@ export default class Graphics {
     }
 
     drawBug(bug) {
-        this.ctx.fillStyle= "brown";
+        this.ctx.fillStyle="#bae644";
         this.ctx.beginPath();
-        this.ctx.fillRect(bug.xBug, bug.yBug, Bug.WIDTH, Bug.HEIGHT);
-        this.ctx.fillStyle="#e74c3c";
+        this.ctx.fillRect(bug.xBug, bug.yBug, Bug.WIDTH-5, Bug.HEIGHT-5);
         this.ctx.fill();
         this.ctx.closePath();
     }
 
     drawSnake(snake) {
-        this.ctx.fillStyle = "#f1c40f";
+        this.ctx.fillStyle = "#e6c144";
         for (let i = 0; i < snake.body.length - 1; i++) {
-            this.ctx.fillRect(snake._body[i].x, snake._body[i].y, Snake.WIDTH-3, Snake.HEIGHT-3)
+            this.ctx.fillRect(snake.body[i].x, snake.body[i].y, Snake.WIDTH-3, Snake.HEIGHT-3)
         }
 
         this.ctx.fillStyle = "#e64369";

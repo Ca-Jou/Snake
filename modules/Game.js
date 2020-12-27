@@ -55,6 +55,7 @@ export default class Game {
             if (Game.snake.getHead().x < 0 || Game.snake.getHead().x > Game.graphics.canvas.width || Game.snake.getHead().y < 0 || Game.snake.getHead().y > Game.graphics.canvas.width) {
                 Game.timeout = 0;
                 Game.life--;
+                Game.score = 0;
                 // inGame = false;
 
                 if (Game.life == 0) {

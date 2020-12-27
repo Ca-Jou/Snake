@@ -31,25 +31,16 @@ async function game(graphics, snake, bug) {
       snake.grow(snake.getHead().x, snake.getHead().y);
     }
 
-    if (snake.getHead().x == bug.xBug && snake.getHead().y == bug.yBug) {
-      score += Math.trunc(10 + 2 * snake.body.length / snake.growthRate);
-      snake.grow(bug.xBug, bug.yBug);
-      snake.growthRate++;
-      timeout = 0;
-      bug.popUpRandom(graphics);
-    } else if (timeout++ > 100) {
-      timeout = 0;
-      bug.popUpRandom(graphics);
-    }
+
 
     graphics.drawBug(bug);
     graphics.drawSnake(snake);
     graphics.showScore(score);
     graphics.showLife(life);
 
-    console.log('script', snake.dead(graphics));
     if (snake.dead(graphics)) {
       timeout = 0;
+      score = 0;
       life--;
       if (life >= 0) {
         graphics.dead();
@@ -62,6 +53,17 @@ async function game(graphics, snake, bug) {
     if (life == -1) {
       graphics.gameOver();
       inGame = false;
+    }
+
+    if (snake.getHead().x == bug.xBug && snake.getHead().y == bug.yBug) {
+      score += Math.trunc(10 + 2 * snake.body.length / snake.growthRate);
+      snake.grow(bug.xBug, bug.yBug);
+      snake.growthRate++;
+      timeout = 0;
+      bug.popUpRandom(graphics);
+    } else if (timeout++ > 100) {
+      timeout = 0;
+      bug.popUpRandom(graphics);
     }
 
     await sleep(300);
@@ -96,10 +98,6 @@ function keyboardHandler(e, snake) {
       currentDir = "D";
       break;
 
-    // case "Escape":
-    //   depX = 0;
-    //   depY = 0;
-    //   break;
   }
 }
 
